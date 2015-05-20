@@ -2,9 +2,16 @@
   "name": "assume-aws-role",
   "version": "1.0.0",
   "description": "Work with multiple AWS accounts more easily",
-  "bin": {
-    "assume-aws-role": "bin/assume-aws-role.js"
+  "homepage": "https://github.com/jbuck/assume-aws-role",
+  "bugs": {
+    "url": "https://github.com/jbuck/assume-aws-role/issues"
   },
+  "bin": "bin/assume-aws-role.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jbuck/assume-aws-role"
+  },
+  "preferGlobal": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
