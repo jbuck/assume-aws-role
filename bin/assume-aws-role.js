@@ -12,8 +12,8 @@ var home = process.env.HOME ||
 var filename = path.join(home, ".assume-aws-role", "config");
 
 if (!command) {
-  console.error("Usage: assume-role add <alias> <role-arn> [mfa-arn]");
-  console.error("       assume-role <alias> [mfa-token]");
+  console.error("Usage: assume-aws-role add <alias> <role-arn> [mfa-arn]");
+  console.error("       assume-aws-role <alias> [mfa-token]");
   process.exit(1);
 }
 
@@ -24,12 +24,12 @@ if (command === "add") {
 
   if (!alias) {
     console.error("No alias specified");
-    console.error("Usage: assume-role add <alias> <role-arn> [mfa-arn]");
+    console.error("Usage: assume-aws-role add <alias> <role-arn> [mfa-arn]");
     process.exit(1);
   }
   if (!role) {
     console.error("No role ARN specified");
-    console.error("Usage: assume-role add <alias> <role-arn> [mfa-arn]");
+    console.error("Usage: assume-aws-role add <alias> <role-arn> [mfa-arn]");
     process.exit(1);
   }
   if (!home) {
@@ -57,13 +57,13 @@ if (!config[command]) {
   var aliases = Object.keys(config);
   if (aliases.length === 0) {
     console.error("You need to add an alias before you can use it");
-    console.error("Usage: assume-role add <alias> <role-arn> [mfa-arn]");
+    console.error("Usage: assume-aws-role add <alias> <role-arn> [mfa-arn]");
   } else {
     console.error("Did you mean:");
     console.error(aliases.map(function(a) {
       return "  " + a
     }).join("\n"))
-    console.error("assume-role <alias> [mfa-token]");
+    console.error("assume-aws-role <alias> [mfa-token]");
   }
 
   process.exit(1);
@@ -74,14 +74,14 @@ var token = process.argv[3];
 
 if (role.SerialNumber && !token) {
   console.error("You need to specify your MFA token to assume this role");
-  console.error("assume-role <alias> [mfa-token]");
+  console.error("assume-aws-role <alias> [mfa-token]");
   process.exit(1);
 }
 
 var STS = new AWS.STS();
 STS.assumeRole({
   RoleArn: role.RoleArn,
-  RoleSessionName: "assume-role-cli",
+  RoleSessionName: "assume-aws-role-cli",
   SerialNumber: role.SerialNumber,
   TokenCode: token
 }, function(error, data) {
@@ -94,7 +94,7 @@ STS.assumeRole({
   modEnv.AWS_ACCESS_KEY_ID = data.Credentials.AccessKeyId;
   modEnv.AWS_SECRET_ACCESS_KEY = data.Credentials.SecretAccessKey;
   modEnv.AWS_SESSION_TOKEN = data.Credentials.SessionToken;
-  modEnv.PS1 = "(assume-role " + command + ")$ ";
+  modEnv.PS1 = "(assume-aws-role " + command + ")$ ";
 
   spawn(process.env.SHELL, {
     env: modEnv,
