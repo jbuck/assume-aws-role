@@ -1,6 +1,6 @@
 {
   "name": "assume-aws-role",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Work with multiple AWS accounts more easily",
   "bin": {
     "assume-aws-role": "bin/assume-aws-role.js"
