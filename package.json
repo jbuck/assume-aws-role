@@ -1,0 +1,17 @@
+{
+  "name": "assume-aws-role",
+  "version": "0.0.0",
+  "description": "Work with multiple AWS accounts more easily",
+  "bin": {
+    "assume-aws-role": "bin/assume-aws-role.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jon Buckley <jon@jbuckley.ca>",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "aws-sdk": "^2.1.27",
+    "fs-extra": "^0.18.3"
+  }
+}
