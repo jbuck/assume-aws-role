@@ -16,6 +16,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Jon Buckley <jon@jbuckley.ca>",
+  "contributors": [
+    "Benson Wong <mostlygeek+git@gmail.com>"
+  ],
   "license": "Apache-2.0",
   "dependencies": {
     "aws-sdk": "^2.1.27",
