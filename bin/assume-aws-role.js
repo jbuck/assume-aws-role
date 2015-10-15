@@ -94,6 +94,9 @@ STS.assumeRole({
   modEnv.AWS_ACCESS_KEY_ID = data.Credentials.AccessKeyId;
   modEnv.AWS_SECRET_ACCESS_KEY = data.Credentials.SecretAccessKey;
   modEnv.AWS_SESSION_TOKEN = data.Credentials.SessionToken;
+
+  // required for boto sts to work
+  modEnv.AWS_SECURITY_TOKEN = data.Credentials.SessionToken;
   modEnv.PS1 = "(assume-aws-role " + command + ")$ ";
 
   spawn(process.env.SHELL, {
