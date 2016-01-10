@@ -10,6 +10,19 @@ var home = process.env.HOME ||
            process.env.USERPROFILE ||
            (process.env.HOMEPATH ? ((process.env.HOMEDRIVE || 'C:/') + process.env.HOMEPATH) : null);
 var filename = path.join(home, ".assume-aws-role", "config");
+var readConfig = function(filename) {
+  var config = {};
+
+  try {
+    config = fs.readJsonSync(filename, {throws: false});
+  } catch (read_error) {
+    if (read_error.code != 'ENOENT') {
+      throw read_error;
+    }
+  }
+
+  return config;
+};
 
 if (!command) {
   console.error("Usage: assume-aws-role add <alias> <role-arn> [mfa-arn]");
@@ -37,7 +50,7 @@ if (command === "add") {
     process.exit(1);
   }
 
-  var config = fs.readJsonSync(filename, {throws: false}) || {};
+  var config = readConfig(filename);
 
   config[alias] = {
     RoleArn: role
@@ -50,7 +63,7 @@ if (command === "add") {
   process.exit(0);
 }
 
-var config = fs.readJsonSync(filename, {throws: false}) || {};
+var config = readConfig(filename);
 if (!config[command]) {
   console.error("%s not found.", command);
 
