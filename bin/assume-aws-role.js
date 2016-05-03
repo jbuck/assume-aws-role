@@ -63,6 +63,13 @@ if (command === "add") {
   process.exit(0);
 }
 
+if (command == "list") {
+	var config = readConfig(filename);
+	var aliases = Object.keys(config);
+  	console.error("Defined aliases: %s" , aliases);
+  	process.exit(1);
+}
+
 var config = readConfig(filename);
 if (!config[command]) {
   console.error("%s not found.", command);
