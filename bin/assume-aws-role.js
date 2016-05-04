@@ -66,8 +66,8 @@ if (command === "add") {
 if (command == "list") {
 	var config = readConfig(filename);
 	var aliases = Object.keys(config);
-  	console.error("Defined aliases: %s" , aliases);
-  	process.exit(1);
+  	console.log("Defined aliases: %s" , aliases);
+  	process.exit(0);
 }
 
 var config = readConfig(filename);
