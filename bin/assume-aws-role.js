@@ -26,8 +26,8 @@ var readConfig = function(filename) {
 
 if (!command) {
   console.error("Usage: assume-aws-role add <alias> <role-arn> [mfa-arn]");
-  console.error("Usage: assume-aws-role delete <alias>");
-  console.error("Usage: assume-aws-role list");
+  console.error("       assume-aws-role delete <alias>");
+  console.error("       assume-aws-role list");
   console.error("       assume-aws-role <alias> [mfa-token]");
   process.exit(1);
 }
@@ -87,7 +87,6 @@ if (command == "delete") {
 	}
 	delete config[alias];
 	fs.outputJsonSync(filename, config);
-	console.log("The alias %s was deleted", alias);
 	process.exit(0);
 }
 
