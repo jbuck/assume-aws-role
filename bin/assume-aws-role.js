@@ -26,6 +26,8 @@ var readConfig = function(filename) {
 
 if (!command) {
   console.error("Usage: assume-aws-role add <alias> <role-arn> [mfa-arn]");
+  console.error("       assume-aws-role delete <alias>");
+  console.error("       assume-aws-role list");
   console.error("       assume-aws-role <alias> [mfa-token]");
   process.exit(1);
 }
@@ -68,6 +70,24 @@ if (command == "list") {
 	var aliases = Object.keys(config);
   	console.log("Defined aliases: %s" , aliases);
   	process.exit(0);
+}
+
+if (command == "delete") {
+	var alias = process.argv[3];
+	if (!alias) {
+	    console.error("No alias specified");
+	    console.error("Usage: assume-aws-role delete <alias>");
+	    process.exit(1);
+	}
+	var config = readConfig(filename);
+	var role = config[alias];
+	if (!role) {
+	    console.error("The specified alias does not exist");
+	    process.exit(1);
+	}
+	delete config[alias];
+	fs.outputJsonSync(filename, config);
+	process.exit(0);
 }
 
 var config = readConfig(filename);

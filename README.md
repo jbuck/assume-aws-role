@@ -41,6 +41,10 @@ You can list all the defined roles with a single command:
 
 `assume-aws-role list`
 
+You can delete a defined alias with a single command:
+
+`assume-aws-role delete <alias>`
+
 ## How does it work?
 
 Any roles you add are stored in `~/.assume-aws-role/config`. It's optional but highly recommended that you use a MFA device.
