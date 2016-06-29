@@ -21,7 +21,7 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "aws-sdk": "^2.1.27",
-    "fs-extra": "^0.18.3"
+    "aws-sdk": "^2.4.3",
+    "fs-extra": "^0.30.0"
   }
 }
