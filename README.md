@@ -28,7 +28,7 @@ Now you can assume that role we just added:
 
 Now you've got a shell with your temporary security credentials in the environment:
 
-`(assume-aws-role sandbox)$ `
+`(assume-aws-role sandbox):~/ $ `
 
 You can also add roles without MFA devices:
 
