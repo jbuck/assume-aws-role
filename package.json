@@ -17,7 +17,9 @@
   },
   "author": "Jon Buckley <jon@jbuckley.ca>",
   "contributors": [
-    "Benson Wong <mostlygeek+git@gmail.com>"
+    "Benson Wong <mostlygeek+git@gmail.com>",
+    "Eric Rutherford <eric@homepage.me>",
+    "Frank Pavageau <fpavageau@ekino.com>"
   ],
   "license": "Apache-2.0",
   "dependencies": {
