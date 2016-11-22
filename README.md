@@ -51,4 +51,4 @@ Any roles you add are stored in `~/.assume-aws-role/config`. It's optional but h
 
 `assume-aws-role` uses the [STS:AssumeRole API](http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html) to assume the role you specified.
 
-After receiving valid credentials `assume-aws-role` will spawn the shell specified in `$SHELL` with the environment modified to include `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_SESSION_TOKEN`.
+After receiving valid credentials `assume-aws-role` will spawn the shell specified in `$SHELL` with the environment modified to include `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_SESSION_TOKEN`. The environment also includes an overridden `PS1` with a minimal custom prompt, and `ASSUME_AWS_ROLE` with the role so you can fully customize the `PS1` prompt by yourself.
