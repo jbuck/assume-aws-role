@@ -25,7 +25,7 @@ var readConfig = function(filename) {
   return config;
 };
 
-var addProfile = function(profile, role, mfa, key, secret) {
+var addProfile = function(profile, role, mfa, awsprofile) {
   if (!home) {
     console.error("Cannot save credentials, $HOME path not set");
     process.exit(1);
@@ -39,9 +39,8 @@ var addProfile = function(profile, role, mfa, key, secret) {
   if (!!mfa) {
     config[profile].SerialNumber = mfa
   }
-  if (!!key) {
-    config[profile].key = key;
-    config[profile].secret = secret;
+  if (!!awsprofile) {
+    config[profile].awsprofile = awsprofile;
   }
 
   fs.outputJsonSync(filename, config);
@@ -51,8 +50,8 @@ var addProfile = function(profile, role, mfa, key, secret) {
 
 var listProfiles = function(){
   var config = readConfig(filename);
-  var aliases = Object.keys(config);
-  console.log("Defined aliases: %s" , aliases);
+  var profiles = Object.keys(config);
+  console.log("Defined profiles: %s" , profiles);
   process.exit(0);
 }
 
@@ -73,13 +72,13 @@ var assumeRoleWithProfile = function(profile, token) {
   if (!config[profile]) {
     console.error("%s not found.", profile);
   
-    var aliases = Object.keys(config);
-    if (aliases.length === 0) {
+    var profiles = Object.keys(config);
+    if (profiles.length === 0) {
       console.error("You need to add an profile before you can use it");
       console.error("Usage: assume-aws-role add <profile> <role-arn> [mfa-arn]");
     } else {
       console.error("Did you mean:");
-      console.error(aliases.map(function(a) {
+      console.error(profiles.map(function(a) {
         return "  " + a
       }).join("\n"))
       console.error("assume-aws-role <profile> [mfa-token]");
@@ -97,9 +96,9 @@ var assumeRoleWithProfile = function(profile, token) {
   }
   
   var params = {};
-  if (!!role.key) {
-    params.accessKeyId = role.key;
-    params.secretAccessKey = role.secret;
+  if (!!role.awsprofile) {
+    var creds = new AWS.SharedIniFileCredentials({profile: role.awsprofile});
+    params.credentials = creds;
   }
 
   var STS = new AWS.STS(params);
@@ -141,11 +140,10 @@ program
 
 program
   .command('add <profile> <rolearn>')
-  .option("-a, --access-key [key]", "Specify the access key id")
-  .option("-s, --secret [secret]", "Specify the secret access key")
+  .option("-a, --aws-profile [awsprofile]", "Specify the aws credentials profile for the user")
   .option("-m, --mfa-arn [mfaarn]", "Specify the MFA arn")
   .action(function(profile, rolearn, options) {
-    addProfile(profile, rolearn, options.mfaarn, options.accessKey, options.secret);
+    addProfile(profile, rolearn, options.mfaArn, options.awsProfile);
   });
 
 program

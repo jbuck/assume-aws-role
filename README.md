@@ -37,11 +37,11 @@ assume-aws-role add sandbox \
   "arn:aws:iam::123456789012:role/Administrator"
 ```
 
-You can also specify the access key and secret for the user:
+You can also specify the aws profile with credentials for the user:
 ```
 assume-aws-role add sandbox \
   "arn:aws:iam::123456789012:role/Administrator" \
-  --access-key 1111111111111 --secret 222222222222222222222222222222222
+  --aws-profile pohajac
 ```
 
 You can list all the defined roles with a single command:
