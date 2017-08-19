@@ -19,12 +19,12 @@ Next, you need to add a role that you'd like to assume. As an example, lets say 
 ```
 assume-aws-role add sandbox \
   "arn:aws:iam::123456789012:role/Administrator" \
-  "arn:aws:iam::109876543210:mfa/jbuck"
+  --mfa-arn "arn:aws:iam::109876543210:mfa/jbuck"  
 ```
 
 Now you can assume that role we just added:
 
-`assume-aws-role sandbox 123456`
+`assume-aws-role sandbox --mfa-token 123456`
 
 Now you've got a shell with your temporary security credentials in the environment:
 
@@ -37,13 +37,20 @@ assume-aws-role add sandbox \
   "arn:aws:iam::123456789012:role/Administrator"
 ```
 
+You can also specify the access key and secret for the user:
+```
+assume-aws-role add sandbox \
+  "arn:aws:iam::123456789012:role/Administrator" \
+  --access-key 1111111111111 --secret 222222222222222222222222222222222
+```
+
 You can list all the defined roles with a single command:
 
 `assume-aws-role list`
 
-You can delete a defined alias with a single command:
+You can delete a defined profile with a single command:
 
-`assume-aws-role delete <alias>`
+`assume-aws-role delete <profile>`
 
 ## How does it work?
 
