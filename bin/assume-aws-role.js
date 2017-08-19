@@ -4,8 +4,9 @@ var AWS = require("aws-sdk");
 var fs = require("fs-extra")
 var path = require("path");
 var spawn = require("child_process").spawn;
+var program = require("commander");
 
-var command = process.argv[2];
+var isWin = /^win/.test(process.platform);
 var home = process.env.HOME ||
            process.env.USERPROFILE ||
            (process.env.HOMEPATH ? ((process.env.HOMEDRIVE || 'C:/') + process.env.HOMEPATH) : null);
@@ -24,29 +25,7 @@ var readConfig = function(filename) {
   return config;
 };
 
-if (!command) {
-  console.error("Usage: assume-aws-role add <alias> <role-arn> [mfa-arn]");
-  console.error("       assume-aws-role delete <alias>");
-  console.error("       assume-aws-role list");
-  console.error("       assume-aws-role <alias> [mfa-token]");
-  process.exit(1);
-}
-
-if (command === "add") {
-  var alias = process.argv[3];
-  var role = process.argv[4];
-  var mfa = process.argv[5];
-
-  if (!alias) {
-    console.error("No alias specified");
-    console.error("Usage: assume-aws-role add <alias> <role-arn> [mfa-arn]");
-    process.exit(1);
-  }
-  if (!role) {
-    console.error("No role ARN specified");
-    console.error("Usage: assume-aws-role add <alias> <role-arn> [mfa-arn]");
-    process.exit(1);
-  }
+var addProfile = function(profile, role, mfa, key, secret) {
   if (!home) {
     console.error("Cannot save credentials, $HOME path not set");
     process.exit(1);
@@ -54,94 +33,138 @@ if (command === "add") {
 
   var config = readConfig(filename);
 
-  config[alias] = {
+  config[profile] = {
     RoleArn: role
   };
   if (!!mfa) {
-    config[alias].SerialNumber = mfa
+    config[profile].SerialNumber = mfa
+  }
+  if (!!key) {
+    config[profile].key = key;
+    config[profile].secret = secret;
   }
 
   fs.outputJsonSync(filename, config);
   process.exit(0);
+  return this;
+};
+
+var listProfiles = function(){
+  var config = readConfig(filename);
+  var aliases = Object.keys(config);
+  console.log("Defined aliases: %s" , aliases);
+  process.exit(0);
 }
 
-if (command == "list") {
+var deleteProfile = function (profile) {
 	var config = readConfig(filename);
-	var aliases = Object.keys(config);
-  	console.log("Defined aliases: %s" , aliases);
-  	process.exit(0);
-}
-
-if (command == "delete") {
-	var alias = process.argv[3];
-	if (!alias) {
-	    console.error("No alias specified");
-	    console.error("Usage: assume-aws-role delete <alias>");
-	    process.exit(1);
-	}
-	var config = readConfig(filename);
-	var role = config[alias];
+	var role = config[profile];
 	if (!role) {
-	    console.error("The specified alias does not exist");
+	    console.error("The specified profile does not exist");
 	    process.exit(1);
 	}
-	delete config[alias];
+	delete config[profile];
 	fs.outputJsonSync(filename, config);
 	process.exit(0);
 }
 
-var config = readConfig(filename);
-if (!config[command]) {
-  console.error("%s not found.", command);
-
-  var aliases = Object.keys(config);
-  if (aliases.length === 0) {
-    console.error("You need to add an alias before you can use it");
-    console.error("Usage: assume-aws-role add <alias> <role-arn> [mfa-arn]");
-  } else {
-    console.error("Did you mean:");
-    console.error(aliases.map(function(a) {
-      return "  " + a
-    }).join("\n"))
-    console.error("assume-aws-role <alias> [mfa-token]");
-  }
-
-  process.exit(1);
-}
-
-var role = config[command];
-var token = process.argv[3];
-
-if (role.SerialNumber && !token) {
-  console.error("You need to specify your MFA token to assume this role");
-  console.error("assume-aws-role <alias> [mfa-token]");
-  process.exit(1);
-}
-
-var STS = new AWS.STS();
-STS.assumeRole({
-  RoleArn: role.RoleArn,
-  RoleSessionName: "assume-aws-role-cli",
-  SerialNumber: role.SerialNumber,
-  TokenCode: token
-}, function(error, data) {
-  if (error) {
-    console.error(error);
+var assumeRoleWithProfile = function(profile, token) {
+  var config = readConfig(filename);
+  if (!config[profile]) {
+    console.error("%s not found.", profile);
+  
+    var aliases = Object.keys(config);
+    if (aliases.length === 0) {
+      console.error("You need to add an profile before you can use it");
+      console.error("Usage: assume-aws-role add <profile> <role-arn> [mfa-arn]");
+    } else {
+      console.error("Did you mean:");
+      console.error(aliases.map(function(a) {
+        return "  " + a
+      }).join("\n"))
+      console.error("assume-aws-role <profile> [mfa-token]");
+    }
+  
     process.exit(1);
   }
+  
+  var role = config[profile];
+  
+  if (role.SerialNumber && !token) {
+    console.error("You need to specify your MFA token to assume this role");
+    console.error("assume-aws-role <profile> [mfa-token]");
+    process.exit(1);
+  }
+  
+  var params = {};
+  if (!!role.key) {
+    params.accessKeyId = role.key;
+    params.secretAccessKey = role.secret;
+  }
 
-  var modEnv = process.env;
-  modEnv.AWS_ACCESS_KEY_ID = data.Credentials.AccessKeyId;
-  modEnv.AWS_SECRET_ACCESS_KEY = data.Credentials.SecretAccessKey;
-  modEnv.AWS_SESSION_TOKEN = data.Credentials.SessionToken;
-
-  // required for boto sts to work
-  modEnv.AWS_SECURITY_TOKEN = data.Credentials.SessionToken;
-  modEnv.PS1 = "(assume-aws-role " + command + ")$ ";
-  modEnv.ASSUME_AWS_ROLE = command;
-
-  spawn(process.env.SHELL, {
-    env: modEnv,
-    stdio: "inherit"
+  var STS = new AWS.STS(params);
+  STS.assumeRole({
+    RoleArn: role.RoleArn,
+    RoleSessionName: "assume-aws-role-cli",
+    SerialNumber: role.SerialNumber,
+    TokenCode: token
+  }, function(error, data) {
+    if (error) {
+      console.error(error);
+      process.exit(1);
+    }
+  
+    var modEnv = process.env;
+    modEnv.AWS_ACCESS_KEY_ID = data.Credentials.AccessKeyId;
+    modEnv.AWS_SECRET_ACCESS_KEY = data.Credentials.SecretAccessKey;
+    modEnv.AWS_SESSION_TOKEN = data.Credentials.SessionToken;
+  
+    // required for boto sts to work
+    modEnv.AWS_SECURITY_TOKEN = data.Credentials.SessionToken;
+    modEnv.PS1 = "(assume-aws-role " + profile + ")$ ";
+    modEnv.ASSUME_AWS_ROLE = profile;
+  
+    var spawnProc = process.env.SHELL;
+    if (isWin) {
+      spawnProc = process.env.comspec
+    }
+    spawn(spawnProc, {
+      env: modEnv,
+      stdio: "inherit"
+    });
   });
+}
+
+
+program
+  .version('1.0.0');
+
+program
+  .command('add <profile> <rolearn>')
+  .option("-a, --access-key [key]", "Specify the access key id")
+  .option("-s, --secret [secret]", "Specify the secret access key")
+  .option("-m, --mfa-arn [mfaarn]", "Specify the MFA arn")
+  .action(function(profile, rolearn, options) {
+    addProfile(profile, rolearn, options.mfaarn, options.accessKey, options.secret);
+  });
+
+program
+  .command('delete <profile>')
+  .action(function(profile){
+    deleteProfile(profile);
+  });
+
+program
+  .command('list')
+  .action(function(){
+    listProfiles();
+  });
+
+program
+  .command('*')
+  .option("-t, --mfa-token [mfatoken]", "Specify the MFA token")
+  .action(function(profile, options) {
+    assumeRoleWithProfile(profile, options.mfaToken);
 });
+
+program.parse(process.argv);
