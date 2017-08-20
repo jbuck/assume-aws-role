@@ -16,7 +16,7 @@ Configured profile with AWS CLI for cross account access.
 
 First, you need to install the tool from NPM:
 
-`npm install -g assume-aws-role`
+`npm install -g vandrewskis/assume-aws-role`
 
 You can assume the role for profile sandbox:
 
