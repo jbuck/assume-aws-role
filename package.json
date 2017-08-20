@@ -1,6 +1,6 @@
 {
   "name": "assume-aws-role",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Work with multiple AWS accounts more easily",
   "homepage": "https://github.com/jbuck/assume-aws-role",
   "bugs": {
@@ -19,12 +19,14 @@
   "contributors": [
     "Benson Wong <mostlygeek+git@gmail.com>",
     "Eric Rutherford <eric@homepage.me>",
-    "Frank Pavageau <fpavageau@ekino.com>"
+    "Frank Pavageau <fpavageau@ekino.com>",
+    "Marko Pohajač <marko.pohajac@gmail.com>"
   ],
   "license": "Apache-2.0",
   "dependencies": {
     "aws-sdk": "^2.4.3",
     "commander": "^2.11.0",
-    "fs-extra": "^0.30.0"
+    "fs-extra": "^0.30.0",
+    "ini": "^1.3.4"
   }
 }
