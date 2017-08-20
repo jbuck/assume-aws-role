@@ -13,7 +13,6 @@ var isWin = /^win/.test(process.platform);
 var home = process.env.HOME ||
            process.env.USERPROFILE ||
            (process.env.HOMEPATH ? ((process.env.HOMEDRIVE || 'C:/') + process.env.HOMEPATH) : null);
-var filename = path.join(home, ".assume-aws-role", "config");
 var awsConfigFilename = path.join(home, ".aws", "config");
 
 var readConfigIni = function(filepath) {
