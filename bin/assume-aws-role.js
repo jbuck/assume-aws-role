@@ -16,20 +16,6 @@ var home = process.env.HOME ||
 var filename = path.join(home, ".assume-aws-role", "config");
 var awsConfigFilename = path.join(home, ".aws", "config");
 
-var readConfig = function(filepath) {
-  var config = {};
-
-  try {
-    config = fs.readJsonSync(filepath, {throws: false});
-  } catch (read_error) {
-    if (read_error.code != 'ENOENT') {
-      throw read_error;
-    }
-  }
-
-  return config;
-};
-
 var readConfigIni = function(filepath) {
   var config = ini.parse(fs.readFileSync(filepath, 'utf-8'));
   return config;
