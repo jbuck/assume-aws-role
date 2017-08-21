@@ -20,6 +20,10 @@ First, you need to install the tool from NPM:
 
 You can assume the role for profile sandbox:
 
+`assume-aws-role sandbox
+
+or with MFA token
+
 `assume-aws-role sandbox --mfa-token 123456`
 
 Now you've got a shell with your temporary security credentials in the environment:
