@@ -20,7 +20,7 @@ First, you need to install the tool from NPM:
 
 You can assume the role for profile sandbox:
 
-`assume-aws-role sandbox
+`assume-aws-role sandbox`
 
 or with MFA token
 
