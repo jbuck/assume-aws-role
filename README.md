@@ -8,46 +8,31 @@ If you currently manage multiple AWS accounts and use role switching to do work 
 
 * [nodejs](https://nodejs.org/download/) v0.12 or higher
 
+## Prerequisites
+
+Configured profile with AWS CLI for cross account access.
+
 ## Usage
 
 First, you need to install the tool from NPM:
 
-`npm install -g assume-aws-role`
+`npm install -g vandrewskis/assume-aws-role`
 
-Next, you need to add a role that you'd like to assume. As an example, lets say I wanted to add the Administrator role for my sandbox account with MFA required:
+You can assume the role for profile sandbox:
 
-```
-assume-aws-role add sandbox \
-  "arn:aws:iam::123456789012:role/Administrator" \
-  "arn:aws:iam::109876543210:mfa/jbuck"
-```
+`assume-aws-role sandbox`
 
-Now you can assume that role we just added:
+or with MFA token
 
-`assume-aws-role sandbox 123456`
+`assume-aws-role sandbox --mfa-token 123456`
 
 Now you've got a shell with your temporary security credentials in the environment:
 
 `(assume-aws-role sandbox)$ `
 
-You can also add roles without MFA devices:
-
-```
-assume-aws-role add sandbox \
-  "arn:aws:iam::123456789012:role/Administrator"
-```
-
-You can list all the defined roles with a single command:
-
-`assume-aws-role list`
-
-You can delete a defined alias with a single command:
-
-`assume-aws-role delete <alias>`
-
 ## How does it work?
 
-Any roles you add are stored in `~/.assume-aws-role/config`. It's optional but highly recommended that you use a MFA device.
+Profiles are configured per [Configuring the AWS CLI](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html).
 
 `assume-aws-role` uses the [STS:AssumeRole API](http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html) to assume the role you specified.
 
