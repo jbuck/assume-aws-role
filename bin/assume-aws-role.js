@@ -58,10 +58,10 @@ var assumeRoleWithProfile = function(profile, token) {
     modEnv.AWS_SESSION_TOKEN = data.Credentials.SessionToken;
 
     if (!!awsprofile.region) {
-      modEnv.AWS_DEFAULT_REGION = awsprofile.region;
+      modEnv.AWS_REGION = awsprofile.region;
     }
     if (!!awsprofile.output) {
-      modEnv.AWS_DEFAULT_OUTPUT = awsprofile.output;
+      modEnv.AWS_OUTPUT = awsprofile.output;
     }
   
     // required for boto sts to work
