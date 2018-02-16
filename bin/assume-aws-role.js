@@ -140,8 +140,13 @@ STS.assumeRole({
   modEnv.PS1 = "(assume-aws-role " + command + ")$ ";
   modEnv.ASSUME_AWS_ROLE = command;
 
-  spawn(process.env.SHELL, {
+  var sh = spawn(process.env.SHELL, {
     env: modEnv,
     stdio: "inherit"
   });
+
+  sh.on('close',(code)=>{
+       process.exit(code);
+  });
+
 });
