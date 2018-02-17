@@ -1,3 +1,7 @@
+1.5.0
+------------------
+- #19 Return the return code from the shell
+
 1.4.0
 ------------------
 - Update contributors list
