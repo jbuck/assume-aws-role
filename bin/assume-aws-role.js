@@ -145,8 +145,8 @@ STS.assumeRole({
     stdio: "inherit"
   });
 
-  sh.on('close',(code)=>{
-       process.exit(code);
+  sh.on('close', (code) => {
+    process.exit(code);
   });
 
 });
