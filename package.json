@@ -19,7 +19,8 @@
   "contributors": [
     "Benson Wong <mostlygeek+git@gmail.com>",
     "Eric Rutherford <eric@homepage.me>",
-    "Frank Pavageau <fpavageau@ekino.com>"
+    "Frank Pavageau <fpavageau@ekino.com>",
+    "Pablo Chacin <pablochacin@gmail.com>"
   ],
   "license": "Apache-2.0",
   "dependencies": {
