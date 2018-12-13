@@ -1,3 +1,7 @@
+1.5.0
+------------------
+- Add session duration
+
 1.4.0
 ------------------
 - Update contributors list

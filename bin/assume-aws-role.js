@@ -123,7 +123,8 @@ STS.assumeRole({
   RoleArn: role.RoleArn,
   RoleSessionName: "assume-aws-role-cli",
   SerialNumber: role.SerialNumber,
-  TokenCode: token
+  TokenCode: token,
+  DurationSeconds: role.DurationSeconds
 }, function(error, data) {
   if (error) {
     console.error(error);
@@ -134,6 +135,7 @@ STS.assumeRole({
   modEnv.AWS_ACCESS_KEY_ID = data.Credentials.AccessKeyId;
   modEnv.AWS_SECRET_ACCESS_KEY = data.Credentials.SecretAccessKey;
   modEnv.AWS_SESSION_TOKEN = data.Credentials.SessionToken;
+  modEnv.AWS_SESSION_TOKEN_EXPIRATION = data.Credentials.Expiration
 
   // required for boto sts to work
   modEnv.AWS_SECURITY_TOKEN = data.Credentials.SessionToken;

@@ -12,7 +12,7 @@ If you currently manage multiple AWS accounts and use role switching to do work 
 
 First, you need to install the tool from NPM:
 
-`npm install -g assume-aws-role`
+`npm install -g nbrys/assume-aws-role`
 
 Next, you need to add a role that you'd like to assume. As an example, lets say I wanted to add the Administrator role for my sandbox account with MFA required:
 
@@ -48,6 +48,8 @@ You can delete a defined alias with a single command:
 ## How does it work?
 
 Any roles you add are stored in `~/.assume-aws-role/config`. It's optional but highly recommended that you use a MFA device.
+
+You can add `DurationSeconds` for each AWS profile. If you don't set this value, the default of 3600 will be used.
 
 `assume-aws-role` uses the [STS:AssumeRole API](http://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html) to assume the role you specified.
 
